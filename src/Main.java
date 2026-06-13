@@ -7,6 +7,9 @@ import tree.MinHeap;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -33,7 +36,7 @@ public class Main {
             try {
                 menu = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Input tidak valid.");
+                System.out.println("Pilihan tidak valid. Silakan pilih menu 1-7.");
                 continue;
             }
 
@@ -61,7 +64,7 @@ public class Main {
                     System.out.println("Terima kasih telah menggunakan sistem ini.");
                     return;
                 default:
-                    System.out.println("Pilihan tidak ada.");
+                    System.out.println("Pilihan tidak valid. Silakan pilih menu 1-7.");
             }
         }
     }
@@ -106,11 +109,25 @@ public class Main {
 
     private static void displayAllNodes() {
         System.out.println("\n=== Daftar Lokasi ===");
-        for (LocationNode node : graph.getNodes().values()) {
+        for (LocationNode node : getSortedLocations()) {
             System.out.println(node.getId() + " | " + node.getName() + " | Tipe: " + node.getType() + 
                                " | Tingkat Kritis: " + node.getCriticalLevel() + 
                                " | Kebutuhan: " + node.getLogisticsNeeded() + " Ton");
         }
+    }
+
+    private static void displayLocationIds() {
+        System.out.println("\nDaftar ID Lokasi:");
+        for (LocationNode node : getSortedLocations()) {
+            System.out.println(node.getId() + " - " + node.getName());
+        }
+        System.out.println();
+    }
+
+    private static List<LocationNode> getSortedLocations() {
+        List<LocationNode> locations = new ArrayList<>(graph.getNodes().values());
+        locations.sort(Comparator.comparing(LocationNode::getId));
+        return locations;
     }
 
     private static void prioritizeRelief() {
@@ -151,27 +168,54 @@ public class Main {
     }
 
     private static void findShortestRoute() {
-        System.out.print("Masukkan ID Lokasi Asal (contoh: G01): ");
-        String source = scanner.nextLine().toUpperCase();
-        System.out.print("Masukkan ID Lokasi Tujuan (contoh: P05): ");
-        String dest = scanner.nextLine().toUpperCase();
+        displayLocationIds();
+        String source = promptValidLocationId("Masukkan ID lokasi asal: ");
+        String dest = promptValidLocationId("Masukkan ID lokasi tujuan: ");
 
-        if (graph.getNodes().containsKey(source) && graph.getNodes().containsKey(dest)) {
-            Dijkstra dijkstra = new Dijkstra(graph);
-            dijkstra.findShortestPath(source, dest);
-        } else {
-            System.out.println("ID Asal atau Tujuan tidak valid.");
-        }
+        Dijkstra dijkstra = new Dijkstra(graph);
+        dijkstra.findShortestPath(source, dest);
     }
 
     private static void simulateRoadStatus() {
-        System.out.print("Masukkan ID Lokasi 1: ");
-        String u = scanner.nextLine().toUpperCase();
-        System.out.print("Masukkan ID Lokasi 2: ");
-        String v = scanner.nextLine().toUpperCase();
-        System.out.print("Apakah jalan aktif? (true/false): ");
-        boolean status = Boolean.parseBoolean(scanner.nextLine());
+        displayLocationIds();
+        String u = promptValidLocationId("Masukkan ID lokasi 1: ");
+        String v = promptValidLocationId("Masukkan ID lokasi 2: ");
+
+        System.out.println("Pilih status jalan:");
+        System.out.println("1. Aktif");
+        System.out.println("2. Rusak");
+
+        boolean status = promptRoadStatus();
 
         graph.toggleEdge(u, v, status);
+    }
+
+    private static String promptValidLocationId(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String locationId = scanner.nextLine().trim().toUpperCase();
+
+            if (graph.getNodes().containsKey(locationId)) {
+                return locationId;
+            }
+
+            System.out.println("ID lokasi tidak valid. Silakan masukkan ID yang ada di daftar.");
+        }
+    }
+
+    private static boolean promptRoadStatus() {
+        while (true) {
+            System.out.print("Pilihan status: ");
+            String statusChoice = scanner.nextLine().trim();
+
+            if (statusChoice.equals("1")) {
+                return true;
+            }
+            if (statusChoice.equals("2")) {
+                return false;
+            }
+
+            System.out.println("Pilihan status tidak valid. Silakan pilih 1 untuk Aktif atau 2 untuk Rusak.");
+        }
     }
 }
