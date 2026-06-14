@@ -127,34 +127,8 @@ Beberapa keputusan desain:
 
 ## 9. Tracing Manual
 
-Contoh tracing Dijkstra dari `G01` ke `D01`:
-
-1. Mulai dari `G01` dengan jarak 0.
-2. Tetangga awal:
-   - `P01` dengan jarak 15.2 km
-   - `P05` dengan jarak 18.5 km
-3. Jarak terkecil berikutnya adalah `P01`.
-4. Dari `P01`, program mengecek jalur ke `P02`.
-5. Jarak ke `P02` menjadi:
-
-```text
-G01 -> P01 -> P02
-15.2 + 6.7 = 21.9 km
-```
-
-6. Dari `P02`, program mengecek jalur ke `D01`.
-7. Total jarak menjadi:
-
-```text
-G01 -> P01 -> P02 -> D01
-15.2 + 6.7 + 2.1 = 24.0 km
-```
-
-Hasil rute:
-
-```text
-Gudang Pusat Surabaya -> Posko Sidoarjo Kota -> Posko Tanggulangin -> Desa Kedungcangkring
-```
+Sesuai ketentuan, tracing manual untuk 1 proses Tree, 1 proses Graph, dan 1 Edge case telah dipisahkan ke dalam dokumen tersendiri.
+Silakan lihat file: `docs/tracing.md` (atau `tracing.pdf` jika sudah diexport).
 
 ## 10. Screenshot Hasil Program
 
@@ -217,8 +191,14 @@ O(V + E)
 
 Karena setiap node dan edge aktif dicek untuk menentukan komponen jaringan.
 
-## 12. What-if Analysis
+## 12. What-if Analysis & Aspek HOTS
 
+### Aspek HOTS: Kapan Menggunakan MST vs Dijkstra
+Dalam sistem pengiriman bantuan logistik:
+- **Dijkstra** digunakan saat kita perlu mengirim bantuan spesifik dari **satu titik asal ke satu titik tujuan**. Misalnya, sebuah truk dari Gudang Pusat (`G01`) ingin menuju Desa Kedungcangkring (`D01`). Dijkstra menjamin kita menemukan jalur tersingkat agar pengiriman cepat sampai. Fokus utamanya adalah **rute perjalanan optimal**.
+- **Minimum Spanning Tree (Kruskal)** digunakan saat kita merencanakan **pemulihan infrastruktur secara keseluruhan**. Misalnya, setelah gempa, banyak jalan rusak dan pemerintah hanya punya anggaran terbatas. MST memastikan seluruh posko dan desa bisa terhubung kembali ke jaringan utama dengan **total biaya perbaikan jalan (total jarak) paling minimum**. Fokus utamanya adalah **konektivitas jaringan minimal**, bukan rute tercepat antar dua titik.
+
+### Skenario What-if
 Skenario what-if yang tersedia:
 
 ### Jalan Rusak

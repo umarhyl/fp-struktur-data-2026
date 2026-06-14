@@ -22,6 +22,14 @@ import java.util.Set;
 import java.util.LinkedList;
 
 public class Main {
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_BOLD = "\u001B[1m";
+
     private static Graph graph = new Graph();
     private static Scanner scanner = new Scanner(System.in);
     private static ConsoleInput input = new ConsoleInput(scanner);
@@ -30,21 +38,22 @@ public class Main {
         loadData();
         
         while (true) {
-            System.out.println("\n================================================");
-            System.out.println("  DISASTER RELIEF DISTRIBUTION NETWORK - FP 2026  ");
-            System.out.println("================================================");
-            System.out.println("1. Tampilkan Semua Lokasi Posko & Gudang");
-            System.out.println("2. Cari Lokasi Berdasarkan ID/Nama");
-            System.out.println("3. Tambah Data Posko & Kebutuhan");
-            System.out.println("4. Update Kebutuhan Logistik Lokasi");
-            System.out.println("5. Tampilkan Jaringan Peta Saat Ini");
-            System.out.println("6. Prioritaskan Pengiriman Bantuan (Min-Heap)");
-            System.out.println("7. Cari Rute Tercepat Pengiriman (Dijkstra)");
-            System.out.println("8. Rancang Jaringan Distribusi Minimum (Kruskal MST)");
-            System.out.println("9. Simulasi Jalan Rusak / Bencana Susulan");
-            System.out.println("10. Cek Konektivitas Jaringan");
-            System.out.println("11. Keluar");
-            System.out.print("Pilih menu: ");
+            System.out.println("\n" + ANSI_CYAN + ANSI_BOLD + "=========================================================");
+            System.out.println("      DISASTER RELIEF DISTRIBUTION NETWORK - FP 2026     ");
+            System.out.println("=========================================================" + ANSI_RESET);
+            System.out.println(ANSI_YELLOW + "  [1]  " + ANSI_RESET + "Tampilkan Semua Lokasi Posko & Gudang");
+            System.out.println(ANSI_YELLOW + "  [2]  " + ANSI_RESET + "Cari Lokasi Berdasarkan ID/Nama");
+            System.out.println(ANSI_YELLOW + "  [3]  " + ANSI_RESET + "Tambah Data Posko & Kebutuhan");
+            System.out.println(ANSI_YELLOW + "  [4]  " + ANSI_RESET + "Update Kebutuhan Logistik Lokasi");
+            System.out.println(ANSI_YELLOW + "  [5]  " + ANSI_RESET + "Tampilkan Jaringan Peta Saat Ini");
+            System.out.println(ANSI_YELLOW + "  [6]  " + ANSI_GREEN + "Prioritaskan Pengiriman Bantuan (Min-Heap)");
+            System.out.println(ANSI_YELLOW + "  [7]  " + ANSI_GREEN + "Cari Rute Tercepat Pengiriman (Dijkstra)");
+            System.out.println(ANSI_YELLOW + "  [8]  " + ANSI_GREEN + "Rancang Jaringan Distribusi Minimum (Kruskal MST)");
+            System.out.println(ANSI_YELLOW + "  [9]  " + ANSI_RED + "Simulasi Jalan Rusak / Bencana Susulan");
+            System.out.println(ANSI_YELLOW + " [10]  " + ANSI_RED + "Cek Konektivitas Jaringan");
+            System.out.println(ANSI_YELLOW + " [11]  " + ANSI_RESET + "Keluar");
+            System.out.println(ANSI_CYAN + "---------------------------------------------------------" + ANSI_RESET);
+            System.out.print(ANSI_BOLD + "Pilih menu (1-11): " + ANSI_RESET);
             
             int menu = -1;
             try {
@@ -96,7 +105,7 @@ public class Main {
     }
 
     private static void loadData() {
-        System.out.println("Memuat dataset buatan sendiri...");
+        System.out.println(ANSI_GREEN + "Memuat dataset buatan sendiri..." + ANSI_RESET);
         // Load Nodes
         try (BufferedReader br = new BufferedReader(new FileReader("data/nodes.csv"))) {
             String line;
@@ -137,22 +146,25 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Gagal membaca edges.csv: " + e.getMessage());
         }
-        System.out.println("Dataset berhasil dimuat (" + graph.getNodes().size() + " node).");
+        System.out.println(ANSI_GREEN + "Dataset berhasil dimuat (" + graph.getNodes().size() + " node)." + ANSI_RESET);
     }
 
     private static void displayAllNodes() {
-        System.out.println("\n=== Daftar Lokasi ===");
+        System.out.println("\n" + ANSI_CYAN + ANSI_BOLD + "=== Daftar Lokasi ===" + ANSI_RESET);
         for (LocationNode node : getSortedLocations()) {
             printLocationDetail(node);
         }
     }
 
     private static void printLocationDetail(LocationNode node) {
-        System.out.println(node.getId() + " | " + node.getName() + " | Tipe: " + node.getType() +
-                           " | Populasi: " + node.getPopulation() +
-                           " | Tingkat Kritis: " + node.getCriticalLevel() +
-                           " | Kebutuhan: " + node.getLogisticsNeeded() + " Ton" +
-                           " | Risiko: " + node.getRiskLevel());
+        System.out.printf("%s[%s]%s %-15s | Tipe: %-6s | Populasi: %-5d | Kritis: %s%-2d%s | Risiko: %s%-2d%s | Kebutuhan: %s%.1f Ton%s%n",
+                ANSI_YELLOW, node.getId(), ANSI_RESET, 
+                node.getName(), 
+                node.getType(), 
+                node.getPopulation(),
+                ANSI_RED, node.getCriticalLevel(), ANSI_RESET,
+                ANSI_RED, node.getRiskLevel(), ANSI_RESET,
+                ANSI_GREEN, node.getLogisticsNeeded(), ANSI_RESET);
     }
 
     private static void displayLocationIds() {
@@ -291,15 +303,15 @@ public class Main {
             }
         }
 
-        System.out.println("\n=== Prioritas Pengiriman Bantuan Teratas (Min-Heap) ===");
-        System.out.println("Skor = (Kritis x 100) + (Risiko x 40) + (Kebutuhan x 5) + (Populasi / 100)");
+        System.out.println("\n" + ANSI_CYAN + ANSI_BOLD + "=== Prioritas Pengiriman Bantuan Teratas (Min-Heap) ===" + ANSI_RESET);
+        System.out.println(ANSI_YELLOW + "Rumus Skor: (Kritis x 100) + (Risiko x 40) + (Kebutuhan x 5) + (Populasi / 100)" + ANSI_RESET);
         int count = 1;
         while (!pq.isEmpty() && count <= 5) {
             Task task = pq.extractMin();
-            System.out.printf("%d. %s (Skor: %.1f, Kritis: %d, Risiko: %d, Kebutuhan: %.1f Ton, Populasi: %d)%n",
+            System.out.printf(ANSI_BOLD + ANSI_RED + "%d. %-15s" + ANSI_RESET + " | Skor: %s%.1f%s | Kritis: %d | Risiko: %d | Kebutuhan: %.1f Ton | Populasi: %d%n",
                               count,
                               task.node.getName(),
-                              task.emergencyScore,
+                              ANSI_GREEN, task.emergencyScore, ANSI_RESET,
                               task.node.getCriticalLevel(),
                               task.node.getRiskLevel(),
                               task.node.getLogisticsNeeded(),
@@ -339,7 +351,7 @@ public class Main {
     }
 
     private static void checkNetworkConnectivity() {
-        System.out.println("\n=== Cek Konektivitas Jaringan ===");
+        System.out.println("\n" + ANSI_CYAN + ANSI_BOLD + "=== Cek Konektivitas Jaringan ===" + ANSI_RESET);
 
         Set<String> visited = new HashSet<>();
         List<List<String>> components = new ArrayList<>();
@@ -351,18 +363,18 @@ public class Main {
         }
 
         if (components.size() == 1) {
-            System.out.println("Status: TERHUBUNG");
+            System.out.println("Status: " + ANSI_GREEN + ANSI_BOLD + "TERHUBUNG" + ANSI_RESET);
             System.out.println("Semua lokasi masih dapat dijangkau melalui jalan aktif.");
             System.out.println("Total lokasi dalam jaringan aktif: " + components.get(0).size());
             return;
         }
 
-        System.out.println("Status: TERPUTUS");
+        System.out.println("Status: " + ANSI_RED + ANSI_BOLD + "TERPUTUS" + ANSI_RESET);
         System.out.println("Jaringan aktif terpecah menjadi " + components.size() + " komponen.");
         for (int i = 0; i < components.size(); i++) {
-            System.out.println("Komponen " + (i + 1) + " (" + components.get(i).size() + " lokasi): " + String.join(", ", components.get(i)));
+            System.out.println(ANSI_YELLOW + "Komponen " + (i + 1) + " (" + components.get(i).size() + " lokasi): " + ANSI_RESET + String.join(", ", components.get(i)));
         }
-        System.out.println("Dampak demo: Dijkstra mungkin tidak menemukan rute jika asal dan tujuan berada di komponen berbeda.");
+        System.out.println(ANSI_RED + "Dampak demo: Dijkstra mungkin tidak menemukan rute jika asal dan tujuan berada di komponen berbeda." + ANSI_RESET);
     }
 
     private static List<String> exploreActiveComponent(String startId, Set<String> visited) {
