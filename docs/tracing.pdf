@@ -1,0 +1,554 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R] /Count 5 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 1911 >>
+stream
+BT
+/F1 10 Tf
+50 738 Td
+(TRACING MANUAL) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Disaster Relief Distribution Network) Tj
+0 -13 Td
+(------------------------------------) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Kelompok 5) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Dokumen ini berisi tracing manual untuk menunjukkan alur kerja struktur data dan algoritma ) Tj
+0 -13 Td
+(utama pada program. Tracing ini dibuat sebagai lampiran terpisah dari laporan utama.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(1. Tracing Min-Heap Prioritas Bantuan) Tj
+0 -13 Td
+(-------------------------------------) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Tujuan) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Menunjukkan proses penentuan lokasi prioritas bantuan menggunakan Min-Heap.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Input) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Data lokasi berasal dari `data/nodes.csv`. Lokasi bertipe Gudang tidak dimasukkan ke antrean) Tj
+0 -13 Td
+( bantuan karena gudang adalah sumber distribusi.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Rumus Skor Prioritas) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Skor = \(Kritis x 100\) + \(Risiko x 40\) + \(Kebutuhan x 5\) + \(Populasi / 100\)) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Semakin tinggi skor, semakin tinggi prioritas bantuan.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Contoh Perhitungan) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Posko Porong:) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(criticalLevel = 5) Tj
+0 -13 Td
+(riskLevel = 5) Tj
+0 -13 Td
+(logisticsNeeded = 35.0) Tj
+0 -13 Td
+(population = 7500) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Skor = \(5 x 100\) + \(5 x 40\) + \(35.0 x 5\) + \(7500 / 100\)) Tj
+0 -13 Td
+(Skor = 500 + 200 + 175 + 75) Tj
+0 -13 Td
+(Skor = 950) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Posko Tanggulangin:) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(criticalLevel = 5) Tj
+0 -13 Td
+(riskLevel = 5) Tj
+0 -13 Td
+(logisticsNeeded = 20.0) Tj
+0 -13 Td
+(population = 3200) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Skor = \(5 x 100\) + \(5 x 40\) + \(20.0 x 5\) + \(3200 / 100\)) Tj
+0 -13 Td
+(Skor = 500 + 200 + 100 + 32) Tj
+0 -13 Td
+(Skor = 832) Tj
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 1763 >>
+stream
+BT
+/F1 10 Tf
+50 738 Td
+() Tj
+0 -13 Td
+(Desa Renokenongo:) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(criticalLevel = 5) Tj
+0 -13 Td
+(riskLevel = 5) Tj
+0 -13 Td
+(logisticsNeeded = 8.0) Tj
+0 -13 Td
+(population = 1500) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Skor = \(5 x 100\) + \(5 x 40\) + \(8.0 x 5\) + \(1500 / 100\)) Tj
+0 -13 Td
+(Skor = 500 + 200 + 40 + 15) Tj
+0 -13 Td
+(Skor = 755) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Langkah Tracing) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Langkah | Proses) Tj
+0 -13 Td
+(1 | Program membaca semua lokasi dari graph.) Tj
+0 -13 Td
+(2 | Lokasi bertipe Gudang dilewati.) Tj
+0 -13 Td
+(3 | Setiap lokasi non-gudang dihitung skor prioritasnya.) Tj
+0 -13 Td
+(4 | Lokasi dimasukkan ke Min-Heap berdasarkan skor.) Tj
+0 -13 Td
+(5 | Program mengambil 5 lokasi dengan prioritas tertinggi.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Hasil) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(1. Posko Porong) Tj
+0 -13 Td
+(2. Posko Tanggulangin) Tj
+0 -13 Td
+(3. Desa Renokenongo) Tj
+0 -13 Td
+(4. Desa Lajuk) Tj
+0 -13 Td
+(5. Desa Gempolsari) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Kesimpulan) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Min-Heap digunakan untuk membantu menentukan lokasi yang harus menerima bantuan lebih dulu ) Tj
+0 -13 Td
+(berdasarkan kondisi darurat yang dihitung dari beberapa atribut.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(2. Tracing Dijkstra dari G01 ke D01) Tj
+0 -13 Td
+(-----------------------------------) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Tujuan) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Menunjukkan proses pencarian rute tercepat dari Gudang Pusat Surabaya ke Desa ) Tj
+0 -13 Td
+(Kedungcangkring.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Input) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Asal  = G01) Tj
+0 -13 Td
+(Tujuan = D01) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Data Awal) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Beberapa edge yang relevan:) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(G01 - P01 = 15.2 km) Tj
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 2044 >>
+stream
+BT
+/F1 10 Tf
+50 738 Td
+(G01 - P05 = 18.5 km) Tj
+0 -13 Td
+(P01 - P02 = 6.7 km) Tj
+0 -13 Td
+(P02 - D01 = 2.1 km) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Langkah Tracing) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Langkah | Node Diproses | Jarak Saat Ini | Update Jarak) Tj
+0 -13 Td
+(1 | G01 | 0.0 | P01 = 15.2, P05 = 18.5) Tj
+0 -13 Td
+(2 | P01 | 15.2 | P02 = 21.9) Tj
+0 -13 Td
+(3 | P05 | 18.5 | Tidak menghasilkan rute lebih pendek ke D01) Tj
+0 -13 Td
+(4 | P02 | 21.9 | D01 = 24.0) Tj
+0 -13 Td
+(5 | D01 | 24.0 | Tujuan ditemukan) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Perhitungan Rute) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(G01 -> P01 -> P02 -> D01) Tj
+0 -13 Td
+(15.2 + 6.7 + 2.1 = 24.0 km) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Hasil) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Gudang Pusat Surabaya -> Posko Sidoarjo Kota -> Posko Tanggulangin -> Desa Kedungcangkring) Tj
+0 -13 Td
+(Total jarak = 24.0 km) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Kesimpulan) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Dijkstra memilih rute dengan total jarak terkecil dari lokasi asal ke lokasi tujuan. Edge ) Tj
+0 -13 Td
+(yang rusak tidak digunakan dalam proses pencarian rute.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(3. Tracing Kruskal MST) Tj
+0 -13 Td
+(----------------------) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Tujuan) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Menunjukkan proses pembentukan jaringan distribusi minimum menggunakan Kruskal MST.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Input) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Semua edge aktif pada graph digunakan sebagai kandidat jaringan.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Langkah Umum) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Langkah | Proses) Tj
+0 -13 Td
+(1 | Program mengambil semua edge aktif.) Tj
+0 -13 Td
+(2 | Edge diurutkan dari bobot terkecil ke terbesar.) Tj
+0 -13 Td
+(3 | Edge terkecil dipilih jika tidak membentuk siklus.) Tj
+0 -13 Td
+(4 | Jika edge membentuk siklus, edge dilewati.) Tj
+0 -13 Td
+(5 | Proses berlanjut sampai seluruh node terhubung dalam jaringan minimum.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Contoh Edge Awal yang Dipilih) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Desa Besuki -- Desa Renokenongo == 1.2 km) Tj
+0 -13 Td
+(Desa Besuki -- Posko Porong == 1.5 km) Tj
+ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 2050 >>
+stream
+BT
+/F1 10 Tf
+50 738 Td
+(Desa Kalidawir -- Desa Ketapang == 1.5 km) Tj
+0 -13 Td
+(Desa Kedungcangkring -- Desa Pejarakan == 1.8 km) Tj
+0 -13 Td
+(Desa Sentul -- Desa Pamotan == 1.9 km) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Hasil) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Total Jarak Jaringan: 78.6 km) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Kesimpulan) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Kruskal MST menghasilkan jaringan distribusi minimum dengan memilih edge berbobot kecil ) Tj
+0 -13 Td
+(tanpa membentuk siklus. Hasilnya adalah jaringan yang tetap menghubungkan semua lokasi ) Tj
+0 -13 Td
+(dengan total jarak yang lebih efisien.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(4. Tracing Simulasi Jalan Rusak) Tj
+0 -13 Td
+(-------------------------------) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Tujuan) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Menunjukkan perubahan status edge ketika terjadi jalan rusak.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Input) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Lokasi 1 = G01) Tj
+0 -13 Td
+(Lokasi 2 = P01) Tj
+0 -13 Td
+(Status   = Rusak) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Langkah Tracing) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Langkah | Proses) Tj
+0 -13 Td
+(1 | User memilih menu simulasi jalan rusak.) Tj
+0 -13 Td
+(2 | Program menerima ID lokasi `G01` dan `P01`.) Tj
+0 -13 Td
+(3 | Program mencari edge `G01 -> P01` dan `P01 -> G01`.) Tj
+0 -13 Td
+(4 | Status kedua edge diubah menjadi tidak aktif.) Tj
+0 -13 Td
+(5 | Saat graph ditampilkan, jalur tersebut diberi tanda rusak.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Hasil) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Jalur G01 - P01 statusnya menjadi: RUSAK/TERTUTUP) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Dampak) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(- Dijkstra tidak menggunakan jalur yang rusak.) Tj
+0 -13 Td
+(- Jika ada rute alternatif, program mencari rute lain.) Tj
+0 -13 Td
+(- Jika tidak ada rute alternatif, program menampilkan bahwa rute tidak tersedia.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(5. Tracing Cek Konektivitas Jaringan) Tj
+0 -13 Td
+(------------------------------------) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Tujuan) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Menunjukkan proses pengecekan apakah seluruh lokasi masih terhubung melalui jalan aktif.) Tj
+ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
+endobj
+13 0 obj
+<< /Length 1135 >>
+stream
+BT
+/F1 10 Tf
+50 738 Td
+() Tj
+0 -13 Td
+(Langkah Tracing) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Langkah | Proses) Tj
+0 -13 Td
+(1 | Program memilih satu node awal.) Tj
+0 -13 Td
+(2 | Program menelusuri semua tetangga melalui edge aktif.) Tj
+0 -13 Td
+(3 | Node yang berhasil dikunjungi ditandai sebagai visited.) Tj
+0 -13 Td
+(4 | Jika masih ada node yang belum visited, program membuat komponen baru.) Tj
+0 -13 Td
+(5 | Jika hanya ada satu komponen, graph dinyatakan terhubung.) Tj
+0 -13 Td
+(6 | Jika lebih dari satu komponen, graph dinyatakan terputus.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Hasil Normal) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Status: TERHUBUNG) Tj
+0 -13 Td
+(Semua lokasi masih dapat dijangkau melalui jalan aktif.) Tj
+0 -13 Td
+(Total lokasi dalam jaringan aktif: 25) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Hasil Jika Terputus) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Status: TERPUTUS) Tj
+0 -13 Td
+(Jaringan aktif terpecah menjadi 2 komponen.) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Kesimpulan) Tj
+0 -13 Td
+() Tj
+0 -13 Td
+(Tracing konektivitas membantu menunjukkan apakah jaringan distribusi masih dapat menjangkau ) Tj
+0 -13 Td
+(semua lokasi atau terdapat lokasi yang terisolasi.) Tj
+ET
+endstream
+endobj
+xref
+0 14
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000141 00000 n 
+0000000211 00000 n 
+0000000337 00000 n 
+0000002300 00000 n 
+0000002426 00000 n 
+0000004241 00000 n 
+0000004367 00000 n 
+0000006463 00000 n 
+0000006591 00000 n 
+0000008694 00000 n 
+0000008822 00000 n 
+trailer
+<< /Size 14 /Root 1 0 R >>
+startxref
+10010
+%%EOF
