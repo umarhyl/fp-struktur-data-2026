@@ -8,11 +8,11 @@ Project ini merupakan sistem sederhana berbasis Java untuk membantu distribusi b
 
 ## 2. Nama Anggota Kelompok
 
-- Satya
-- Umar
-- Rifki
-- Azfaro
-- [Nama anggota 5]
+- 
+- 
+- 
+- 
+- 
 
 ## 3. Deskripsi Masalah
 
