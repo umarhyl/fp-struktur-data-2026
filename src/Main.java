@@ -5,12 +5,19 @@ import model.LocationNode;
 import tree.MinHeap;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.LinkedList;
 
 public class Main {
     private static Graph graph = new Graph();
@@ -31,14 +38,15 @@ public class Main {
             System.out.println("6. Cari Rute Tercepat Pengiriman (Dijkstra)");
             System.out.println("7. Rancang Jaringan Distribusi Minimum (Kruskal MST)");
             System.out.println("8. Simulasi Jalan Rusak / Bencana Susulan");
-            System.out.println("9. Keluar");
+            System.out.println("9. Cek Konektivitas Jaringan");
+            System.out.println("10. Keluar");
             System.out.print("Pilih menu: ");
             
             int menu = -1;
             try {
                 menu = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Pilihan tidak valid. Silakan pilih menu 1-9.");
+                System.out.println("Pilihan tidak valid. Silakan pilih menu 1-10.");
                 continue;
             }
 
@@ -69,10 +77,13 @@ public class Main {
                     simulateRoadStatus();
                     break;
                 case 9:
+                    checkNetworkConnectivity();
+                    break;
+                case 10:
                     System.out.println("Terima kasih telah menggunakan sistem ini.");
                     return;
                 default:
-                    System.out.println("Pilihan tidak valid. Silakan pilih menu 1-9.");
+                    System.out.println("Pilihan tidak valid. Silakan pilih menu 1-10.");
             }
         }
     }
@@ -84,6 +95,9 @@ public class Main {
             String line;
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
                 String[] data = line.split(",");
                 if (data.length == 7) {
                     LocationNode node = new LocationNode(
@@ -105,6 +119,9 @@ public class Main {
             String line;
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
                 String[] data = line.split(",");
                 if (data.length == 3) {
                     graph.addEdge(data[0], data[1], Double.parseDouble(data[2]));
@@ -183,8 +200,13 @@ public class Main {
         int riskLevel = promptIntInRange("Tingkat risiko akses (1-5): ", 1, 5);
 
         LocationNode node = new LocationNode(id, name, type, population, criticalLevel, logisticsNeeded, riskLevel);
+        if (!appendNodeToCsv(node)) {
+            System.out.println("Data lokasi tidak jadi ditambahkan karena gagal menyimpan ke nodes.csv.");
+            return;
+        }
+
         graph.addNode(node);
-        System.out.println("Data lokasi berhasil ditambahkan ke sesi program.");
+        System.out.println("Data lokasi berhasil ditambahkan dan disimpan ke data/nodes.csv.");
 
         if (promptYesNo("Hubungkan lokasi ini ke jaringan jalan sekarang? (y/n): ")) {
             displayLocationIds();
@@ -196,7 +218,11 @@ public class Main {
 
             double distance = promptDoubleInRange("Jarak/bobot jalan (km): ", 0.1, Double.MAX_VALUE);
             graph.addEdge(id, neighborId, distance);
-            System.out.println("Jalur " + id + " - " + neighborId + " berhasil ditambahkan.");
+            if (appendEdgeToCsv(id, neighborId, distance)) {
+                System.out.println("Jalur " + id + " - " + neighborId + " berhasil ditambahkan dan disimpan ke data/edges.csv.");
+            } else {
+                System.out.println("Jalur " + id + " - " + neighborId + " berhasil ditambahkan ke sesi program, tetapi gagal disimpan ke data/edges.csv.");
+            }
         }
     }
 
@@ -208,33 +234,52 @@ public class Main {
         
         class Task implements Comparable<Task> {
             LocationNode node;
-            int priorityScore;
+            double emergencyScore;
 
-            Task(LocationNode node, int priorityScore) {
+            Task(LocationNode node, double emergencyScore) {
                 this.node = node;
-                this.priorityScore = priorityScore;
+                this.emergencyScore = emergencyScore;
             }
 
             @Override
             public int compareTo(Task o) {
-                return Integer.compare(this.priorityScore, o.priorityScore);
+                int scoreComparison = Double.compare(o.emergencyScore, this.emergencyScore);
+                if (scoreComparison != 0) {
+                    return scoreComparison;
+                }
+                return this.node.getId().compareTo(o.node.getId());
             }
         }
 
         MinHeap<Task> pq = new MinHeap<>();
         for (LocationNode node : graph.getNodes().values()) {
             if (!node.getType().equalsIgnoreCase("Gudang") && node.getLogisticsNeeded() > 0) {
-                pq.insert(new Task(node, 6 - node.getCriticalLevel()));
+                pq.insert(new Task(node, calculateEmergencyScore(node)));
             }
         }
 
         System.out.println("\n=== Prioritas Pengiriman Bantuan Teratas (Min-Heap) ===");
+        System.out.println("Skor = (Kritis x 100) + (Risiko x 40) + (Kebutuhan x 5) + (Populasi / 100)");
         int count = 1;
         while (!pq.isEmpty() && count <= 5) {
             Task task = pq.extractMin();
-            System.out.println(count + ". " + task.node.getName() + " (Tingkat Kritis: " + task.node.getCriticalLevel() + ", Kebutuhan: " + task.node.getLogisticsNeeded() + " Ton)");
+            System.out.printf("%d. %s (Skor: %.1f, Kritis: %d, Risiko: %d, Kebutuhan: %.1f Ton, Populasi: %d)%n",
+                              count,
+                              task.node.getName(),
+                              task.emergencyScore,
+                              task.node.getCriticalLevel(),
+                              task.node.getRiskLevel(),
+                              task.node.getLogisticsNeeded(),
+                              task.node.getPopulation());
             count++;
         }
+    }
+
+    private static double calculateEmergencyScore(LocationNode node) {
+        return (node.getCriticalLevel() * 100.0)
+                + (node.getRiskLevel() * 40.0)
+                + (node.getLogisticsNeeded() * 5.0)
+                + (node.getPopulation() / 100.0);
     }
 
     private static void findShortestRoute() {
@@ -258,6 +303,106 @@ public class Main {
         boolean status = promptRoadStatus();
 
         graph.toggleEdge(u, v, status);
+    }
+
+    private static void checkNetworkConnectivity() {
+        System.out.println("\n=== Cek Konektivitas Jaringan ===");
+
+        Set<String> visited = new HashSet<>();
+        List<List<String>> components = new ArrayList<>();
+
+        for (LocationNode node : getSortedLocations()) {
+            if (!visited.contains(node.getId())) {
+                components.add(exploreActiveComponent(node.getId(), visited));
+            }
+        }
+
+        if (components.size() == 1) {
+            System.out.println("Status: TERHUBUNG");
+            System.out.println("Semua lokasi masih dapat dijangkau melalui jalan aktif.");
+            System.out.println("Total lokasi dalam jaringan aktif: " + components.get(0).size());
+            return;
+        }
+
+        System.out.println("Status: TERPUTUS");
+        System.out.println("Jaringan aktif terpecah menjadi " + components.size() + " komponen.");
+        for (int i = 0; i < components.size(); i++) {
+            System.out.println("Komponen " + (i + 1) + " (" + components.get(i).size() + " lokasi): " + String.join(", ", components.get(i)));
+        }
+        System.out.println("Dampak demo: Dijkstra mungkin tidak menemukan rute jika asal dan tujuan berada di komponen berbeda.");
+    }
+
+    private static List<String> exploreActiveComponent(String startId, Set<String> visited) {
+        List<String> component = new ArrayList<>();
+        Queue<String> queue = new LinkedList<>();
+
+        visited.add(startId);
+        queue.add(startId);
+
+        while (!queue.isEmpty()) {
+            String currentId = queue.poll();
+            LocationNode currentNode = graph.getNodes().get(currentId);
+            component.add(currentId + "-" + currentNode.getName());
+
+            for (model.RouteEdge edge : graph.getNeighbors(currentId)) {
+                if (!edge.isActive()) {
+                    continue;
+                }
+
+                String neighborId = edge.getDestinationId();
+                if (!visited.contains(neighborId)) {
+                    visited.add(neighborId);
+                    queue.add(neighborId);
+                }
+            }
+        }
+
+        component.sort(String::compareTo);
+        return component;
+    }
+
+    private static boolean appendNodeToCsv(LocationNode node) {
+        String line = node.getId() + "," +
+                      node.getName() + "," +
+                      node.getType() + "," +
+                      node.getPopulation() + "," +
+                      node.getCriticalLevel() + "," +
+                      node.getLogisticsNeeded() + "," +
+                      node.getRiskLevel();
+        try {
+            appendCsvLine("data/nodes.csv", line);
+            return true;
+        } catch (IOException e) {
+            System.out.println("Gagal menyimpan nodes.csv: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private static boolean appendEdgeToCsv(String sourceId, String destId, double distance) {
+        try {
+            appendCsvLine("data/edges.csv", sourceId + "," + destId + "," + distance);
+            return true;
+        } catch (IOException e) {
+            System.out.println("Gagal menyimpan edges.csv: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private static void appendCsvLine(String filePath, String line) throws IOException {
+        File file = new File(filePath);
+        try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
+            long length = raf.length();
+            if (length > 0) {
+                raf.seek(length - 1);
+                int lastByte = raf.read();
+                if (lastByte != '\n' && lastByte != '\r') {
+                    raf.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+                }
+            }
+
+            raf.seek(raf.length());
+            raf.write(line.getBytes(StandardCharsets.UTF_8));
+        }
     }
 
     private static String promptValidLocationId(String prompt) {
@@ -313,6 +458,10 @@ public class Main {
             String value = scanner.nextLine().trim();
 
             if (!value.isEmpty()) {
+                if (value.contains(",")) {
+                    System.out.println("Input tidak boleh mengandung koma karena akan disimpan ke CSV.");
+                    continue;
+                }
                 return value;
             }
 

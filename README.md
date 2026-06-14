@@ -79,10 +79,11 @@ Saat aplikasi berjalan, dataset akan termuat secara otomatis dan Menu Utama akan
 
 *   **Menu 1 (Tampilkan Lokasi)**: Membaca dan menampilkan atribut lengkap dari 25 dataset `LocationNode`, termasuk `riskLevel`.
 *   **Menu 2 (Cari Lokasi)**: Mencari lokasi berdasarkan ID atau sebagian nama lokasi.
-*   **Menu 3 (Tambah Data Posko & Kebutuhan)**: Menambahkan lokasi baru ke sesi program, mengisi kebutuhan logistik, tingkat kritis, risiko, dan opsional menghubungkannya ke jaringan jalan.
+*   **Menu 3 (Tambah Data Posko & Kebutuhan)**: Menambahkan lokasi baru, mengisi kebutuhan logistik, tingkat kritis, risiko, dan opsional menghubungkannya ke jaringan jalan. Data baru disimpan kembali ke `data/nodes.csv`, sedangkan edge baru disimpan ke `data/edges.csv`.
 *   **Menu 4 (Tampilkan Jaringan)**: Menampilkan tetangga dari setiap simpul (Adjacency List) dan status jalan.
-*   **Menu 5 (Prioritas Pengiriman)**: Menggunakan **Min-Heap** untuk menampilkan Top-5 desa/posko paling darurat berdasarkan Tingkat Kritis (Skala 1-5).
+*   **Menu 5 (Prioritas Pengiriman)**: Menggunakan **Min-Heap** untuk menampilkan Top-5 desa/posko paling darurat berdasarkan skor gabungan: tingkat kritis, risiko akses, kebutuhan logistik, dan populasi terdampak.
 *   **Menu 6 (Cari Rute Dijkstra)**: Kamu akan diminta memasukkan ID Lokasi Awal (cth: `G01`) dan ID Tujuan (cth: `P03`). Program akan mencetak jalur yang harus dilalui beserta total jarak tercepatnya.
 *   **Menu 7 (Rancang Distribusi Kruskal MST)**: Program akan mencetak jaringan rantai pasok paling efisien yang mempertahankan konektivitas ke semua node (Total biaya/jarak minimal).
 *   **Menu 8 (Simulasi Jalan Rusak/Bencana)**: **[What-If Analysis]** Fitur ini memungkinkan pengguna untuk memutus atau mengaktifkan kembali suatu jalan.
     *   *Skenario Pengujian:* Lakukan pencarian Dijkstra (Menu 6), catat rutenya. Lalu gunakan Menu 8 untuk menonaktifkan salah satu jalan yang dilewati oleh Dijkstra tadi dengan memilih status `2. Rusak`. Kemudian jalankan lagi Menu 6. Aplikasi akan secara otomatis menemukan **jalan memutar** untuk menghindari jalan yang rusak tersebut!
+*   **Menu 9 (Cek Konektivitas Jaringan)**: Mengecek apakah semua lokasi masih terhubung melalui jalan aktif. Jika graph terputus, program menampilkan jumlah komponen dan daftar lokasi di setiap komponen.

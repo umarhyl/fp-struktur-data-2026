@@ -93,19 +93,19 @@ Jarak: 2.4
 ```
 
 Expected Output:
-Program menambahkan lokasi baru ke sesi program dan menambahkan edge baru ke graph.
+Program menambahkan lokasi baru ke graph, menyimpan lokasi ke `data/nodes.csv`, dan menyimpan edge baru ke `data/edges.csv`.
 
 Actual Output:
 ```text
-Data lokasi berhasil ditambahkan ke sesi program.
-Jalur P99 - P01 berhasil ditambahkan.
+Data lokasi berhasil ditambahkan dan disimpan ke data/nodes.csv.
+Jalur P99 - P01 berhasil ditambahkan dan disimpan ke data/edges.csv.
 ```
 
 Status:
 Berhasil
 
 Catatan:
-Data tambahan bersifat runtime/session. Setelah program ditutup, dataset CSV awal tidak berubah.
+Data tambahan sekarang persisten. Lokasi baru disimpan ke `data/nodes.csv`, sedangkan jalur baru disimpan ke `data/edges.csv`.
 
 ## Skenario Normal 4 - Dijkstra
 
@@ -141,22 +141,23 @@ Input:
 ```
 
 Expected Output:
-Program menampilkan lokasi dengan prioritas bantuan tertinggi.
+Program menampilkan lokasi dengan prioritas bantuan tertinggi berdasarkan skor gabungan.
 
 Actual Output:
 ```text
-1. Desa Kedungcangkring (Tingkat Kritis: 5, Kebutuhan: 3.5 Ton)
-2. Desa Besuki (Tingkat Kritis: 5, Kebutuhan: 6.5 Ton)
-3. Desa Gempolsari (Tingkat Kritis: 5, Kebutuhan: 7.0 Ton)
-4. Desa Lajuk (Tingkat Kritis: 5, Kebutuhan: 7.5 Ton)
-5. Desa Renokenongo (Tingkat Kritis: 5, Kebutuhan: 8.0 Ton)
+Skor = (Kritis x 100) + (Risiko x 40) + (Kebutuhan x 5) + (Populasi / 100)
+1. Posko Porong (Skor: 950.0, Kritis: 5, Risiko: 5, Kebutuhan: 35.0 Ton, Populasi: 7500)
+2. Posko Tanggulangin (Skor: 832.0, Kritis: 5, Risiko: 5, Kebutuhan: 20.0 Ton, Populasi: 3200)
+3. Desa Renokenongo (Skor: 755.0, Kritis: 5, Risiko: 5, Kebutuhan: 8.0 Ton, Populasi: 1500)
+4. Desa Lajuk (Skor: 751.5, Kritis: 5, Risiko: 5, Kebutuhan: 7.5 Ton, Populasi: 1400)
+5. Desa Gempolsari (Skor: 748.0, Kritis: 5, Risiko: 5, Kebutuhan: 7.0 Ton, Populasi: 1300)
 ```
 
 Status:
 Berhasil
 
 Catatan:
-Min-Heap berjalan dan mengeluarkan node dengan tingkat kritis tertinggi sebagai prioritas.
+Min-Heap berjalan dan mengeluarkan node dengan skor darurat tertinggi sebagai prioritas. Skor mempertimbangkan tingkat kritis, risiko akses, kebutuhan logistik, dan populasi.
 
 ## Skenario Normal 6 - Kruskal MST
 
@@ -215,20 +216,44 @@ Berhasil
 Catatan:
 Input status menggunakan pilihan angka `1. Aktif` dan `2. Rusak`.
 
+## Skenario Normal 8 - Cek Konektivitas Jaringan
+
+Input:
+```text
+9
+```
+
+Expected Output:
+Program menampilkan apakah semua lokasi masih terhubung melalui jalan aktif.
+
+Actual Output pada jaringan normal:
+```text
+=== Cek Konektivitas Jaringan ===
+Status: TERHUBUNG
+Semua lokasi masih dapat dijangkau melalui jalan aktif.
+Total lokasi dalam jaringan aktif: 25
+```
+
+Status:
+Berhasil
+
+Catatan:
+Fitur ini dipakai untuk demo eksplisit ketika graph terputus, tidak hanya bergantung pada pesan Dijkstra.
+
 ## Edge Case 1 - Menu Tidak Valid
 
 Input:
 ```text
 abc
-10
+11
 ```
 
 Expected Output:
-Program menolak input menu yang tidak valid dan meminta user memilih menu 1-9.
+Program menolak input menu yang tidak valid dan meminta user memilih menu 1-10.
 
 Actual Output:
 ```text
-Pilihan tidak valid. Silakan pilih menu 1-9.
+Pilihan tidak valid. Silakan pilih menu 1-10.
 ```
 
 Status:
@@ -336,6 +361,41 @@ Berhasil
 Catatan:
 Validasi status dilakukan langsung per input.
 
+## Edge Case 6 - Graph Terputus
+
+Input:
+```text
+3
+ID lokasi baru: PX2
+Nama lokasi: Posko Terisolasi
+Tipe: 2
+Jumlah penduduk/pengungsi: 50
+Tingkat kritis: 3
+Kebutuhan logistik: 2.0
+Tingkat risiko akses: 4
+Hubungkan ke jaringan: n
+9
+```
+
+Expected Output:
+Program mendeteksi bahwa graph aktif memiliki lebih dari satu komponen.
+
+Actual Output:
+```text
+=== Cek Konektivitas Jaringan ===
+Status: TERPUTUS
+Jaringan aktif terpecah menjadi 2 komponen.
+Komponen 1 (... lokasi): ...
+Komponen 2 (1 lokasi): PX2-Posko Terisolasi
+Dampak demo: Dijkstra mungkin tidak menemukan rute jika asal dan tujuan berada di komponen berbeda.
+```
+
+Status:
+Berhasil
+
+Catatan:
+Ini menutup edge case graph terputus secara eksplisit untuk kebutuhan demo.
+
 ## Screenshot Output
 
 Screenshot output program disimpan di folder `docs/screenshots/`.
@@ -349,13 +409,14 @@ Daftar file:
 04-dijkstra.png
 05-kruskal-mst.png
 06-simulasi-jalan-rusak.png
+07-konektivitas-jaringan.png
 ```
 
 ## Script Demo Singkat
 
 Pertama, saya menjalankan program melalui terminal.
 
-Di menu utama, terdapat fitur tampil lokasi, search lokasi, tambah data posko, tampil jaringan, prioritas bantuan, Dijkstra, Kruskal MST, dan simulasi jalan rusak.
+Di menu utama, terdapat fitur tampil lokasi, search lokasi, tambah data posko, tampil jaringan, prioritas bantuan, Dijkstra, Kruskal MST, simulasi jalan rusak, dan cek konektivitas jaringan.
 
 Saya mulai dari menampilkan daftar lokasi agar terlihat dataset awal yang digunakan. Dataset memiliki 25 node, 43 edge, dan 5 atribut tambahan selain ID dan nama.
 
@@ -370,3 +431,5 @@ Kemudian, saya mencoba fitur rute tercepat. Program menggunakan Dijkstra untuk m
 Setelah itu, saya menampilkan MST menggunakan Kruskal untuk membentuk jaringan distribusi minimum.
 
 Terakhir, saya menjalankan simulasi jalan rusak untuk menunjukkan bahwa status rute dapat diubah dan memengaruhi jaringan/rute.
+
+Sebagai penutup edge case, saya menjalankan cek konektivitas jaringan untuk menunjukkan apakah graph masih satu komponen atau sudah terputus.
