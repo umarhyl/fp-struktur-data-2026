@@ -19,15 +19,30 @@ public class Graph {
         adjList.putIfAbsent(node.getId(), new ArrayList<>());
     }
 
-    public void addEdge(String sourceId, String destId, double distance) {
+    public boolean addEdge(String sourceId, String destId, double distance) {
         if (!nodes.containsKey(sourceId) || !nodes.containsKey(destId)) {
             System.out.println("Error: Salah satu node tidak ditemukan.");
-            return;
+            return false;
+        }
+
+        if (hasEdge(sourceId, destId)) {
+            System.out.println("Jalur " + sourceId + " - " + destId + " sudah ada. Duplikasi edge dibatalkan.");
+            return false;
         }
         
         // Undirected graph for distribution routes
         adjList.get(sourceId).add(new RouteEdge(sourceId, destId, distance));
         adjList.get(destId).add(new RouteEdge(destId, sourceId, distance));
+        return true;
+    }
+
+    public boolean hasEdge(String sourceId, String destId) {
+        for (RouteEdge edge : adjList.getOrDefault(sourceId, new ArrayList<>())) {
+            if (edge.getDestinationId().equals(destId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void toggleEdge(String sourceId, String destId, boolean activeStatus) {

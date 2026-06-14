@@ -26,7 +26,8 @@ Program berhasil dicompile dan dijalankan. Dataset berhasil dimuat dengan total 
 - Tree custom: terpenuhi melalui `MinHeap`.
 - Graph custom: terpenuhi melalui adjacency list di `Graph`.
 - Minimal 2 algoritma graph: terpenuhi melalui Dijkstra dan Kruskal MST.
-- Fitur Opsi 8: tambah posko, cari jalur, prioritas posko, total biaya/jarak distribusi, dan simulasi jalan rusak.
+- Fitur Opsi 8: tambah posko, update kebutuhan logistik, cari jalur, prioritas posko, total biaya/jarak distribusi, dan simulasi jalan rusak.
+- Data persistence: tambah lokasi, tambah edge, dan update kebutuhan logistik tersimpan kembali ke CSV.
 
 ## Skenario Normal 1 - Menampilkan Lokasi
 
@@ -107,11 +108,34 @@ Berhasil
 Catatan:
 Data tambahan sekarang persisten. Lokasi baru disimpan ke `data/nodes.csv`, sedangkan jalur baru disimpan ke `data/edges.csv`.
 
-## Skenario Normal 4 - Dijkstra
+## Skenario Normal 4 - Update Kebutuhan Logistik
 
 Input:
 ```text
-6
+4
+ID lokasi: P01
+Kebutuhan logistik baru: 22.5
+```
+
+Expected Output:
+Program mengubah kebutuhan logistik lokasi dan menyimpan perubahan ke `data/nodes.csv`.
+
+Actual Output:
+```text
+Kebutuhan logistik P01 berhasil diupdate dari 15.5 Ton menjadi 22.5 Ton dan disimpan ke data/nodes.csv.
+```
+
+Status:
+Berhasil
+
+Catatan:
+Setelah program dibuka ulang, nilai kebutuhan logistik baru tetap terbaca dari CSV.
+
+## Skenario Normal 5 - Dijkstra
+
+Input:
+```text
+7
 Asal: G01
 Tujuan: D01
 ```
@@ -133,11 +157,11 @@ Berhasil
 Catatan:
 Validasi ID dilakukan langsung per input. Jika ID asal salah, program meminta ID asal lagi sebelum lanjut ke ID tujuan.
 
-## Skenario Normal 5 - Prioritas Bantuan Min-Heap
+## Skenario Normal 6 - Prioritas Bantuan Min-Heap
 
 Input:
 ```text
-5
+6
 ```
 
 Expected Output:
@@ -159,11 +183,11 @@ Berhasil
 Catatan:
 Min-Heap berjalan dan mengeluarkan node dengan skor darurat tertinggi sebagai prioritas. Skor mempertimbangkan tingkat kritis, risiko akses, kebutuhan logistik, dan populasi.
 
-## Skenario Normal 6 - Kruskal MST
+## Skenario Normal 7 - Kruskal MST
 
 Input:
 ```text
-7
+8
 ```
 
 Expected Output:
@@ -186,11 +210,11 @@ Berhasil
 Catatan:
 Kruskal MST berhasil menghasilkan jaringan minimum dari edge yang aktif.
 
-## Skenario Normal 7 - Simulasi Jalan Rusak
+## Skenario Normal 8 - Simulasi Jalan Rusak
 
 Input:
 ```text
-8
+9
 Lokasi 1: G01
 Lokasi 2: P01
 Status: 2
@@ -216,11 +240,11 @@ Berhasil
 Catatan:
 Input status menggunakan pilihan angka `1. Aktif` dan `2. Rusak`.
 
-## Skenario Normal 8 - Cek Konektivitas Jaringan
+## Skenario Normal 9 - Cek Konektivitas Jaringan
 
 Input:
 ```text
-9
+10
 ```
 
 Expected Output:
@@ -245,15 +269,15 @@ Fitur ini dipakai untuk demo eksplisit ketika graph terputus, tidak hanya bergan
 Input:
 ```text
 abc
-11
+12
 ```
 
 Expected Output:
-Program menolak input menu yang tidak valid dan meminta user memilih menu 1-10.
+Program menolak input menu yang tidak valid dan meminta user memilih menu 1-11.
 
 Actual Output:
 ```text
-Pilihan tidak valid. Silakan pilih menu 1-10.
+Pilihan tidak valid. Silakan pilih menu 1-11.
 ```
 
 Status:
@@ -266,7 +290,7 @@ Validasi berlaku untuk input non-angka dan angka di luar pilihan menu.
 
 Input:
 ```text
-6
+7
 Asal: X99
 Asal ulang: G01
 Tujuan: Y99
@@ -340,7 +364,7 @@ Validasi dilakukan sebelum data dimasukkan ke graph.
 
 Input:
 ```text
-8
+9
 Lokasi 1: G01
 Lokasi 2: P01
 Status: x
@@ -374,7 +398,7 @@ Tingkat kritis: 3
 Kebutuhan logistik: 2.0
 Tingkat risiko akses: 4
 Hubungkan ke jaringan: n
-9
+10
 ```
 
 Expected Output:
@@ -396,6 +420,30 @@ Berhasil
 Catatan:
 Ini menutup edge case graph terputus secara eksplisit untuk kebutuhan demo.
 
+## Edge Case 7 - Duplicate Edge Ditolak
+
+Input pengujian teknis:
+```text
+addEdge("A", "B", 1.0)
+addEdge("B", "A", 2.0)
+```
+
+Expected Output:
+Pemanggilan pertama berhasil, pemanggilan kedua ditolak karena graph bersifat undirected sehingga `A-B` sama dengan `B-A`.
+
+Actual Output:
+```text
+true
+Jalur B - A sudah ada. Duplikasi edge dibatalkan.
+false
+```
+
+Status:
+Berhasil
+
+Catatan:
+Jumlah neighbor A dan B tetap masing-masing 1, jadi duplicate edge tidak masuk ke adjacency list.
+
 ## Screenshot Output
 
 Screenshot output program disimpan di folder `docs/screenshots/`.
@@ -410,19 +458,22 @@ Daftar file:
 05-kruskal-mst.png
 06-simulasi-jalan-rusak.png
 07-konektivitas-jaringan.png
+08-update-kebutuhan-logistik.png
 ```
 
 ## Script Demo Singkat
 
 Pertama, saya menjalankan program melalui terminal.
 
-Di menu utama, terdapat fitur tampil lokasi, search lokasi, tambah data posko, tampil jaringan, prioritas bantuan, Dijkstra, Kruskal MST, simulasi jalan rusak, dan cek konektivitas jaringan.
+Di menu utama, terdapat fitur tampil lokasi, search lokasi, tambah data posko, update kebutuhan logistik, tampil jaringan, prioritas bantuan, Dijkstra, Kruskal MST, simulasi jalan rusak, dan cek konektivitas jaringan.
 
 Saya mulai dari menampilkan daftar lokasi agar terlihat dataset awal yang digunakan. Dataset memiliki 25 node, 43 edge, dan 5 atribut tambahan selain ID dan nama.
 
 Selanjutnya, saya mencoba search lokasi untuk menunjukkan fitur pencarian data.
 
 Kemudian, saya menambahkan posko baru beserta kebutuhan logistik dan menghubungkannya ke jaringan distribusi.
+
+Berikutnya, saya memperbarui kebutuhan logistik salah satu posko untuk menunjukkan fitur update data yang tersimpan kembali ke CSV.
 
 Setelah itu, saya memilih fitur prioritas bantuan. Pada fitur ini, program menggunakan Min-Heap untuk mengambil lokasi dengan prioritas tertinggi.
 

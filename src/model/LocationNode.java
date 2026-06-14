@@ -27,6 +27,10 @@ public class LocationNode {
     public double getLogisticsNeeded() { return logisticsNeeded; }
     public int getRiskLevel() { return riskLevel; }
 
+    public void setLogisticsNeeded(double logisticsNeeded) {
+        this.logisticsNeeded = logisticsNeeded;
+    }
+
     @Override
     public String toString() {
         return id + " - " + name + " (" + type + ")";

@@ -2,7 +2,9 @@ import graph.Dijkstra;
 import graph.Graph;
 import graph.KruskalMST;
 import model.LocationNode;
+import model.RouteEdge;
 import tree.MinHeap;
+import util.ConsoleInput;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,6 +24,7 @@ import java.util.LinkedList;
 public class Main {
     private static Graph graph = new Graph();
     private static Scanner scanner = new Scanner(System.in);
+    private static ConsoleInput input = new ConsoleInput(scanner);
 
     public static void main(String[] args) {
         loadData();
@@ -33,20 +36,21 @@ public class Main {
             System.out.println("1. Tampilkan Semua Lokasi Posko & Gudang");
             System.out.println("2. Cari Lokasi Berdasarkan ID/Nama");
             System.out.println("3. Tambah Data Posko & Kebutuhan");
-            System.out.println("4. Tampilkan Jaringan Peta Saat Ini");
-            System.out.println("5. Prioritaskan Pengiriman Bantuan (Min-Heap)");
-            System.out.println("6. Cari Rute Tercepat Pengiriman (Dijkstra)");
-            System.out.println("7. Rancang Jaringan Distribusi Minimum (Kruskal MST)");
-            System.out.println("8. Simulasi Jalan Rusak / Bencana Susulan");
-            System.out.println("9. Cek Konektivitas Jaringan");
-            System.out.println("10. Keluar");
+            System.out.println("4. Update Kebutuhan Logistik Lokasi");
+            System.out.println("5. Tampilkan Jaringan Peta Saat Ini");
+            System.out.println("6. Prioritaskan Pengiriman Bantuan (Min-Heap)");
+            System.out.println("7. Cari Rute Tercepat Pengiriman (Dijkstra)");
+            System.out.println("8. Rancang Jaringan Distribusi Minimum (Kruskal MST)");
+            System.out.println("9. Simulasi Jalan Rusak / Bencana Susulan");
+            System.out.println("10. Cek Konektivitas Jaringan");
+            System.out.println("11. Keluar");
             System.out.print("Pilih menu: ");
             
             int menu = -1;
             try {
                 menu = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Pilihan tidak valid. Silakan pilih menu 1-10.");
+                System.out.println("Pilihan tidak valid. Silakan pilih menu 1-11.");
                 continue;
             }
 
@@ -61,29 +65,32 @@ public class Main {
                     addReliefPost();
                     break;
                 case 4:
-                    graph.printGraph();
+                    updateLogisticsNeeded();
                     break;
                 case 5:
-                    prioritizeRelief();
+                    graph.printGraph();
                     break;
                 case 6:
-                    findShortestRoute();
+                    prioritizeRelief();
                     break;
                 case 7:
+                    findShortestRoute();
+                    break;
+                case 8:
                     KruskalMST mst = new KruskalMST(graph);
                     mst.printMinimumSpanningTree();
                     break;
-                case 8:
+                case 9:
                     simulateRoadStatus();
                     break;
-                case 9:
+                case 10:
                     checkNetworkConnectivity();
                     break;
-                case 10:
+                case 11:
                     System.out.println("Terima kasih telah menggunakan sistem ini.");
                     return;
                 default:
-                    System.out.println("Pilihan tidak valid. Silakan pilih menu 1-10.");
+                    System.out.println("Pilihan tidak valid. Silakan pilih menu 1-11.");
             }
         }
     }
@@ -192,12 +199,12 @@ public class Main {
     private static void addReliefPost() {
         System.out.println("\n=== Tambah Data Posko & Kebutuhan ===");
         String id = promptNewLocationId();
-        String name = promptNonEmptyText("Nama lokasi: ");
-        String type = promptLocationType();
-        int population = promptIntInRange("Jumlah penduduk/pengungsi: ", 0, Integer.MAX_VALUE);
-        int criticalLevel = promptIntInRange("Tingkat kritis (1-5): ", 1, 5);
-        double logisticsNeeded = promptDoubleInRange("Kebutuhan logistik (ton): ", 0.0, Double.MAX_VALUE);
-        int riskLevel = promptIntInRange("Tingkat risiko akses (1-5): ", 1, 5);
+        String name = input.promptNonEmptyText("Nama lokasi: ");
+        String type = input.promptLocationType();
+        int population = input.promptIntInRange("Jumlah penduduk/pengungsi: ", 0, Integer.MAX_VALUE);
+        int criticalLevel = input.promptIntInRange("Tingkat kritis (1-5): ", 1, 5);
+        double logisticsNeeded = input.promptDoubleInRange("Kebutuhan logistik (ton): ", 0.0, Double.MAX_VALUE);
+        int riskLevel = input.promptIntInRange("Tingkat risiko akses (1-5): ", 1, 5);
 
         LocationNode node = new LocationNode(id, name, type, population, criticalLevel, logisticsNeeded, riskLevel);
         if (!appendNodeToCsv(node)) {
@@ -208,21 +215,47 @@ public class Main {
         graph.addNode(node);
         System.out.println("Data lokasi berhasil ditambahkan dan disimpan ke data/nodes.csv.");
 
-        if (promptYesNo("Hubungkan lokasi ini ke jaringan jalan sekarang? (y/n): ")) {
+        if (input.promptYesNo("Hubungkan lokasi ini ke jaringan jalan sekarang? (y/n): ")) {
             displayLocationIds();
             String neighborId = promptValidLocationId("Masukkan ID lokasi yang terhubung: ");
             if (neighborId.equals(id)) {
                 System.out.println("Lokasi baru tidak bisa dihubungkan ke dirinya sendiri.");
                 return;
             }
+            if (graph.hasEdge(id, neighborId)) {
+                System.out.println("Jalur " + id + " - " + neighborId + " sudah ada. Duplikasi edge dibatalkan.");
+                return;
+            }
 
-            double distance = promptDoubleInRange("Jarak/bobot jalan (km): ", 0.1, Double.MAX_VALUE);
-            graph.addEdge(id, neighborId, distance);
+            double distance = input.promptDoubleInRange("Jarak/bobot jalan (km): ", 0.1, Double.MAX_VALUE);
+            if (!graph.addEdge(id, neighborId, distance)) {
+                return;
+            }
             if (appendEdgeToCsv(id, neighborId, distance)) {
                 System.out.println("Jalur " + id + " - " + neighborId + " berhasil ditambahkan dan disimpan ke data/edges.csv.");
             } else {
                 System.out.println("Jalur " + id + " - " + neighborId + " berhasil ditambahkan ke sesi program, tetapi gagal disimpan ke data/edges.csv.");
             }
+        }
+    }
+
+    private static void updateLogisticsNeeded() {
+        System.out.println("\n=== Update Kebutuhan Logistik Lokasi ===");
+        displayLocationIds();
+        String id = promptValidLocationId("Masukkan ID lokasi yang akan diupdate: ");
+        LocationNode node = graph.getNodes().get(id);
+
+        printLocationDetail(node);
+        double oldValue = node.getLogisticsNeeded();
+        double newValue = input.promptDoubleInRange("Kebutuhan logistik baru (ton): ", 0.0, Double.MAX_VALUE);
+
+        node.setLogisticsNeeded(newValue);
+        if (saveAllNodesToCsv()) {
+            System.out.printf("Kebutuhan logistik %s berhasil diupdate dari %.1f Ton menjadi %.1f Ton dan disimpan ke data/nodes.csv.%n",
+                              id, oldValue, newValue);
+        } else {
+            node.setLogisticsNeeded(oldValue);
+            System.out.println("Update dibatalkan karena gagal menyimpan perubahan ke data/nodes.csv.");
         }
     }
 
@@ -344,7 +377,7 @@ public class Main {
             LocationNode currentNode = graph.getNodes().get(currentId);
             component.add(currentId + "-" + currentNode.getName());
 
-            for (model.RouteEdge edge : graph.getNeighbors(currentId)) {
+            for (RouteEdge edge : graph.getNeighbors(currentId)) {
                 if (!edge.isActive()) {
                     continue;
                 }
@@ -362,15 +395,8 @@ public class Main {
     }
 
     private static boolean appendNodeToCsv(LocationNode node) {
-        String line = node.getId() + "," +
-                      node.getName() + "," +
-                      node.getType() + "," +
-                      node.getPopulation() + "," +
-                      node.getCriticalLevel() + "," +
-                      node.getLogisticsNeeded() + "," +
-                      node.getRiskLevel();
         try {
-            appendCsvLine("data/nodes.csv", line);
+            appendCsvLine("data/nodes.csv", locationToCsvLine(node));
             return true;
         } catch (IOException e) {
             System.out.println("Gagal menyimpan nodes.csv: " + e.getMessage());
@@ -386,6 +412,32 @@ public class Main {
             System.out.println("Gagal menyimpan edges.csv: " + e.getMessage());
             return false;
         }
+    }
+
+    private static boolean saveAllNodesToCsv() {
+        File file = new File("data/nodes.csv");
+        try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
+            raf.setLength(0);
+            raf.write("id,name,type,population,criticalLevel,logisticsNeeded,riskLevel".getBytes(StandardCharsets.UTF_8));
+            for (LocationNode node : getSortedLocations()) {
+                raf.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+                raf.write(locationToCsvLine(node).getBytes(StandardCharsets.UTF_8));
+            }
+            return true;
+        } catch (IOException e) {
+            System.out.println("Gagal menyimpan nodes.csv: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private static String locationToCsvLine(LocationNode node) {
+        return node.getId() + "," +
+               node.getName() + "," +
+               node.getType() + "," +
+               node.getPopulation() + "," +
+               node.getCriticalLevel() + "," +
+               node.getLogisticsNeeded() + "," +
+               node.getRiskLevel();
     }
 
     private static void appendCsvLine(String filePath, String line) throws IOException {
@@ -452,93 +504,4 @@ public class Main {
         }
     }
 
-    private static String promptNonEmptyText(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String value = scanner.nextLine().trim();
-
-            if (!value.isEmpty()) {
-                if (value.contains(",")) {
-                    System.out.println("Input tidak boleh mengandung koma karena akan disimpan ke CSV.");
-                    continue;
-                }
-                return value;
-            }
-
-            System.out.println("Input tidak boleh kosong.");
-        }
-    }
-
-    private static String promptLocationType() {
-        while (true) {
-            System.out.println("Pilih tipe lokasi:");
-            System.out.println("1. Gudang");
-            System.out.println("2. Posko");
-            System.out.println("3. Desa");
-            System.out.print("Pilihan tipe: ");
-
-            String choice = scanner.nextLine().trim();
-            if (choice.equals("1")) return "Gudang";
-            if (choice.equals("2")) return "Posko";
-            if (choice.equals("3")) return "Desa";
-
-            System.out.println("Pilihan tipe tidak valid. Silakan pilih 1-3.");
-        }
-    }
-
-    private static int promptIntInRange(String prompt, int min, int max) {
-        while (true) {
-            System.out.print(prompt);
-            try {
-                int value = Integer.parseInt(scanner.nextLine().trim());
-                if (value >= min && value <= max) {
-                    return value;
-                }
-            } catch (NumberFormatException e) {
-                // fall through to validation message
-            }
-
-            if (max == Integer.MAX_VALUE) {
-                System.out.println("Input harus berupa angka minimal " + min + ".");
-            } else {
-                System.out.println("Input harus berupa angka antara " + min + " dan " + max + ".");
-            }
-        }
-    }
-
-    private static double promptDoubleInRange(String prompt, double min, double max) {
-        while (true) {
-            System.out.print(prompt);
-            try {
-                double value = Double.parseDouble(scanner.nextLine().trim());
-                if (value >= min && value <= max) {
-                    return value;
-                }
-            } catch (NumberFormatException e) {
-                // fall through to validation message
-            }
-
-            if (max == Double.MAX_VALUE) {
-                System.out.println("Input harus berupa angka minimal " + min + ".");
-            } else {
-                System.out.println("Input harus berupa angka antara " + min + " dan " + max + ".");
-            }
-        }
-    }
-
-    private static boolean promptYesNo(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String answer = scanner.nextLine().trim().toLowerCase();
-
-            if (answer.equals("y") || answer.equals("ya")) {
-                return true;
-            }
-            if (answer.equals("n") || answer.equals("tidak")) {
-                return false;
-            }
-
-            System.out.println("Pilihan tidak valid. Masukkan y atau n.");
-        }
-    }
 }
