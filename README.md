@@ -64,10 +64,6 @@ FP_Strukdat_KelompokXX/
 │   └── Main.java          # Entry-point aplikasi interaktif berbasis CLI
 └── README.md              # Dokumentasi utama proyek
 ```
-
-> [!NOTE]
-> Pastikan struktur folder saat pengumpulan sesuai dengan panduan *Deliverables* mata kuliah. Laporan berekstensi `.md` pada folder `docs/` harus dikonversi terlebih dahulu ke dalam format `.pdf`.
-
 ---
 
 ## Panduan Instalasi & Penggunaan
