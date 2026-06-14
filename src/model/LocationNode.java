@@ -7,14 +7,16 @@ public class LocationNode {
     private int population;
     private int criticalLevel; // 1 (Low) to 5 (High)
     private double logisticsNeeded; // in tons
+    private int riskLevel; // 1 (Low) to 5 (High)
 
-    public LocationNode(String id, String name, String type, int population, int criticalLevel, double logisticsNeeded) {
+    public LocationNode(String id, String name, String type, int population, int criticalLevel, double logisticsNeeded, int riskLevel) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.population = population;
         this.criticalLevel = criticalLevel;
         this.logisticsNeeded = logisticsNeeded;
+        this.riskLevel = riskLevel;
     }
 
     public String getId() { return id; }
@@ -23,6 +25,7 @@ public class LocationNode {
     public int getPopulation() { return population; }
     public int getCriticalLevel() { return criticalLevel; }
     public double getLogisticsNeeded() { return logisticsNeeded; }
+    public int getRiskLevel() { return riskLevel; }
 
     @Override
     public String toString() {

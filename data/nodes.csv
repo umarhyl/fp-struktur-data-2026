@@ -1,26 +1,26 @@
-id,name,type,population,criticalLevel,logisticsNeeded
-G01,Gudang Pusat Surabaya,Gudang,0,1,0.0
-P01,Posko Sidoarjo Kota,Posko,5000,4,15.5
-P02,Posko Tanggulangin,Posko,3200,5,20.0
-P03,Posko Porong,Posko,7500,5,35.0
-P04,Posko Jabon,Posko,4100,3,10.0
-P05,Posko Candi,Posko,2800,4,12.5
-D01,Desa Kedungcangkring,Desa,850,5,3.5
-D02,Desa Pejarakan,Desa,920,4,4.0
-D03,Desa Besuki,Desa,1200,5,6.5
-D04,Desa Renokenongo,Desa,1500,5,8.0
-D05,Desa Glagaharum,Desa,600,3,2.0
-D06,Desa Ketapang,Desa,1100,4,5.0
-D07,Desa Kalidawir,Desa,950,4,4.5
-D08,Desa Gempolsari,Desa,1300,5,7.0
-D09,Desa Sentul,Desa,780,3,2.5
-D10,Desa Pamotan,Desa,890,3,3.0
-D11,Desa Wunut,Desa,1050,4,4.8
-D12,Desa Lajuk,Desa,1400,5,7.5
-D13,Desa Kebonagung,Desa,920,3,3.2
-D14,Desa Trompoasri,Desa,1150,4,5.5
-D15,Desa Kupang,Desa,1250,5,6.8
-D16,Desa Semambung,Desa,800,2,1.5
-D17,Desa Kebakalan,Desa,700,2,1.0
-D18,Desa Permisan,Desa,1600,4,8.5
-D19,Desa Balongdowo,Desa,900,3,3.0
+id,name,type,population,criticalLevel,logisticsNeeded,riskLevel
+G01,Gudang Pusat Surabaya,Gudang,0,1,0.0,1
+P01,Posko Sidoarjo Kota,Posko,5000,4,15.5,3
+P02,Posko Tanggulangin,Posko,3200,5,20.0,5
+P03,Posko Porong,Posko,7500,5,35.0,5
+P04,Posko Jabon,Posko,4100,3,10.0,3
+P05,Posko Candi,Posko,2800,4,12.5,3
+D01,Desa Kedungcangkring,Desa,850,5,3.5,5
+D02,Desa Pejarakan,Desa,920,4,4.0,4
+D03,Desa Besuki,Desa,1200,5,6.5,5
+D04,Desa Renokenongo,Desa,1500,5,8.0,5
+D05,Desa Glagaharum,Desa,600,3,2.0,3
+D06,Desa Ketapang,Desa,1100,4,5.0,4
+D07,Desa Kalidawir,Desa,950,4,4.5,4
+D08,Desa Gempolsari,Desa,1300,5,7.0,5
+D09,Desa Sentul,Desa,780,3,2.5,3
+D10,Desa Pamotan,Desa,890,3,3.0,3
+D11,Desa Wunut,Desa,1050,4,4.8,4
+D12,Desa Lajuk,Desa,1400,5,7.5,5
+D13,Desa Kebonagung,Desa,920,3,3.2,3
+D14,Desa Trompoasri,Desa,1150,4,5.5,4
+D15,Desa Kupang,Desa,1250,5,6.8,5
+D16,Desa Semambung,Desa,800,2,1.5,2
+D17,Desa Kebakalan,Desa,700,2,1.0,2
+D18,Desa Permisan,Desa,1600,4,8.5,4
+D19,Desa Balongdowo,Desa,900,3,3.0,3

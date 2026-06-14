@@ -39,7 +39,7 @@ Aplikasi ini menggunakan pola desain yang rapi berbasis *Object-Oriented Program
 ```text
 FP/
 ├── data/
-│   ├── nodes.csv          --> Dataset 25 lokasi (ID, Nama, Tipe, Populasi, Tingkat Kritis, Kebutuhan)
+│   ├── nodes.csv          --> Dataset 25 lokasi (ID, Nama, Tipe, Populasi, Tingkat Kritis, Kebutuhan, Risiko)
 │   └── edges.csv          --> Dataset 40+ rute jarak jalan raya antar lokasi (km)
 ├── src/
 │   ├── model/
@@ -77,10 +77,12 @@ java -cp out Main
 ### 3. Penjelasan Fitur / Menu Interaktif
 Saat aplikasi berjalan, dataset akan termuat secara otomatis dan Menu Utama akan muncul. Berikut fungsi dari setiap menu:
 
-*   **Menu 1 (Tampilkan Lokasi)**: Membaca dan menampilkan atribut lengkap dari 25 dataset `LocationNode`.
-*   **Menu 2 (Tampilkan Jaringan)**: Menampilkan tetangga dari setiap simpul (Adjacency List) dan status jalan.
-*   **Menu 3 (Prioritas Pengiriman)**: Menggunakan **Min-Heap** untuk menampilkan Top-5 desa/posko paling darurat berdasarkan Tingkat Kritis (Skala 1-5).
-*   **Menu 4 (Cari Rute Dijkstra)**: Kamu akan diminta memasukkan ID Lokasi Awal (cth: `G01`) dan ID Tujuan (cth: `P03`). Program akan mencetak jalur yang harus dilalui berserta total jarak tercepatnya.
-*   **Menu 5 (Rancang Distribusi Kruskal MST)**: Program akan mencetak jaringan rantai pasok paling efisien yang mempertahankan konektivitas ke semua node (Total biaya/jarak minimal).
-*   **Menu 6 (Simulasi Jalan Rusak/Bencana)**: **[What-If Analysis]** Fitur ini memungkinkan pengguna untuk memutus atau mengaktifkan kembali suatu jalan.
-    *   *Skenario Pengujian:* Lakukan pencarian Dijkstra (Menu 4), catat rutenya. Lalu gunakan Menu 6 untuk menonaktifkan salah satu jalan yang dilewati oleh Dijkstra tadi (masukkan `false`). Kemudian jalankan lagi Menu 4. Aplikasi akan secara otomatis menemukan **jalan memutar** untuk menghindari jalan yang rusak tersebut!
+*   **Menu 1 (Tampilkan Lokasi)**: Membaca dan menampilkan atribut lengkap dari 25 dataset `LocationNode`, termasuk `riskLevel`.
+*   **Menu 2 (Cari Lokasi)**: Mencari lokasi berdasarkan ID atau sebagian nama lokasi.
+*   **Menu 3 (Tambah Data Posko & Kebutuhan)**: Menambahkan lokasi baru ke sesi program, mengisi kebutuhan logistik, tingkat kritis, risiko, dan opsional menghubungkannya ke jaringan jalan.
+*   **Menu 4 (Tampilkan Jaringan)**: Menampilkan tetangga dari setiap simpul (Adjacency List) dan status jalan.
+*   **Menu 5 (Prioritas Pengiriman)**: Menggunakan **Min-Heap** untuk menampilkan Top-5 desa/posko paling darurat berdasarkan Tingkat Kritis (Skala 1-5).
+*   **Menu 6 (Cari Rute Dijkstra)**: Kamu akan diminta memasukkan ID Lokasi Awal (cth: `G01`) dan ID Tujuan (cth: `P03`). Program akan mencetak jalur yang harus dilalui beserta total jarak tercepatnya.
+*   **Menu 7 (Rancang Distribusi Kruskal MST)**: Program akan mencetak jaringan rantai pasok paling efisien yang mempertahankan konektivitas ke semua node (Total biaya/jarak minimal).
+*   **Menu 8 (Simulasi Jalan Rusak/Bencana)**: **[What-If Analysis]** Fitur ini memungkinkan pengguna untuk memutus atau mengaktifkan kembali suatu jalan.
+    *   *Skenario Pengujian:* Lakukan pencarian Dijkstra (Menu 6), catat rutenya. Lalu gunakan Menu 8 untuk menonaktifkan salah satu jalan yang dilewati oleh Dijkstra tadi dengan memilih status `2. Rusak`. Kemudian jalankan lagi Menu 6. Aplikasi akan secara otomatis menemukan **jalan memutar** untuk menghindari jalan yang rusak tersebut!

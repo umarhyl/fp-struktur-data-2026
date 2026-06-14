@@ -104,9 +104,11 @@ public class KruskalMST {
         System.out.println("\n=== Minimum Spanning Tree (Jaringan Distribusi Minimum) ===");
         System.out.println("Jalur yang dipertahankan untuk menghemat biaya operasional:");
         for (Edge edge : mst) {
-            System.out.println(graph.getNodes().get(edge.u).getName() + " -- " +
-                               graph.getNodes().get(edge.v).getName() + " == " + edge.weight + " km");
+            System.out.printf("%s -- %s == %.1f km%n",
+                               graph.getNodes().get(edge.u).getName(),
+                               graph.getNodes().get(edge.v).getName(),
+                               edge.weight);
         }
-        System.out.println("Total Jarak Jaringan: " + totalCost + " km");
+        System.out.printf("Total Jarak Jaringan: %.1f km%n", totalCost);
     }
 }

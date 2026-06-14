@@ -86,7 +86,7 @@ public class Dijkstra {
         System.out.println("\n=== Rute Tercepat ===");
         System.out.println("Dari: " + graph.getNodes().get(sourceId).getName());
         System.out.println("Ke: " + graph.getNodes().get(destId).getName());
-        System.out.println("Total Jarak: " + distances.get(destId) + " km");
+        System.out.printf("Total Jarak: %.1f km%n", distances.get(destId));
         System.out.print("Jalur: ");
         
         for (int i = 0; i < path.size(); i++) {
