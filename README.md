@@ -466,34 +466,34 @@ flowchart TD
     classDef endNode fill:#fbb,stroke:#333,stroke-width:2px;
     
     subgraph Inisialisasi["1. Inisialisasi Jarak & Queue"]
-        Start([Mulai Dijkstra]) --> SetDist[Set Jarak Semua Node = Infinity<br>Jarak Source = 0]
-        SetDist --> PushHeap[Masukkan Source ke Min-Heap]
+        Start(["Mulai Dijkstra"]) --> SetDist["Set Jarak Semua Node = Infinity<br>Jarak Source = 0"]
+        SetDist --> PushHeap["Masukkan Source ke Min-Heap"]
     end
 
     subgraph LoopDijkstra["2. Loop Utama & Evaluasi"]
-        PushHeap --> CheckEmpty{Apakah Heap<br>Kosong?}
-        CheckEmpty -- Ya --> PrintNoPath[Target Tidak Terjangkau]
-        CheckEmpty -- Tidak --> PopMin[Ambil Node Terkecil<br>current = extractMin()]
+        PushHeap --> CheckEmpty{"Apakah Heap<br>Kosong?"}
+        CheckEmpty -- Ya --> PrintNoPath["Target Tidak Terjangkau"]
+        CheckEmpty -- Tidak --> PopMin["Ambil Node Terkecil<br>current = extractMin()"]
         
-        PopMin --> CheckTarget{Apakah current = Destination?}
-        CheckTarget -- Ya --> Done[Rekonstruksi Jalur & Selesai]
-        CheckTarget -- Tidak --> CheckStale{Jarak current > Jarak tercatat?}
+        PopMin --> CheckTarget{"Apakah current = Destination?"}
+        CheckTarget -- Ya --> Done(["Rekonstruksi Jalur & Selesai"])
+        CheckTarget -- Tidak --> CheckStale{"Jarak current > Jarak tercatat?"}
         
         CheckStale -- Ya --> CheckEmpty
         CheckStale -- Tidak --> ExploreNeighbors["3. Iterasi Setiap Tetangga (Neighbor v)"]
     end
 
     subgraph NeighborExploration["4. Evaluasi & Relaksasi Sisi"]
-        ExploreNeighbors --> CheckActive{Apakah Jalan<br> v Aktif?}
-        CheckActive -- Tidak --> NextN[Abaikan: Cek Tetangga Berikutnya]
-        CheckActive -- Ya --> CalcDist[Hitung Jarak Baru:<br>newDist = Jarak current + Bobot]
+        ExploreNeighbors --> CheckActive{"Apakah Jalan<br> v Aktif?"}
+        CheckActive -- Tidak --> NextN["Abaikan: Cek Tetangga Berikutnya"]
+        CheckActive -- Ya --> CalcDist["Hitung Jarak Baru:<br>newDist = Jarak current + Bobot"]
         
-        CalcDist --> CheckRelax{Apakah newDist <br> Jarak Tercatat v?}
-        CheckRelax -- Ya --> UpdateDist[Update Jarak Tercatat v & Previous Node<br>Masukkan v ke Min-Heap]
+        CalcDist --> CheckRelax{"Apakah newDist <br> Jarak Tercatat v?"}
+        CheckRelax -- Ya --> UpdateDist["Update Jarak Tercatat v & Previous Node<br>Masukkan v ke Min-Heap"]
         CheckRelax -- Tidak --> NextN
         
         UpdateDist --> NextN
-        NextN --> MoreN{Ada Tetangga<br>Lain?}
+        NextN --> MoreN{"Ada Tetangga<br>Lain?"}
         MoreN -- Ya --> CheckActive
         MoreN -- Tidak --> CheckEmpty
     end
@@ -632,28 +632,28 @@ flowchart TD
     classDef endNode fill:#fbb,stroke:#333,stroke-width:2px;
 
     subgraph Persiapan["1. Kumpulkan & Urutkan Sisi"]
-        Start([Mulai Kruskal MST]) --> FilterActive[Kumpulkan Semua Jalan Aktif]
-        FilterActive --> SortEdges[Urutkan Jalan Ascending<br>Berdasarkan Jarak / Bobot]
-        SortEdges --> InitDS[Inisialisasi Disjoint-Set untuk Setiap Node<br>makeSet()]
+        Start(["Mulai Kruskal MST"]) --> FilterActive["Kumpulkan Semua Jalan Aktif"]
+        FilterActive --> SortEdges["Urutkan Jalan Ascending<br>Berdasarkan Jarak / Bobot"]
+        SortEdges --> InitDS["Inisialisasi Disjoint-Set untuk Setiap Node<br>makeSet()"]
     end
 
     subgraph Iterasi["2. Pemrosesan Sisi (Greedy Choice)"]
-        InitDS --> LoopEdges{Apakah Masih Ada Jalan<br>& Sisi MST < V - 1?}
-        LoopEdges -- Tidak --> PrintResult[Tampilkan Jaringan MST & Total Jarak]
-        LoopEdges -- Ya --> PopEdge[Ambil Jalan Terpendek Berikutnya]
+        InitDS --> LoopEdges{"Apakah Masih Ada Jalan<br>& Sisi MST < V - 1?"}
+        LoopEdges -- Tidak --> PrintResult["Tampilkan Jaringan MST & Total Jarak"]
+        LoopEdges -- Ya --> PopEdge["Ambil Jalan Terpendek Berikutnya"]
     end
 
     subgraph UnionFind["3. Deteksi Siklus & Union"]
-        PopEdge --> FindRoots[Cari Root dari Kedua Ujung Node:<br>rootU = find(u), rootV = find(v)]
-        FindRoots --> CheckCycle{Apakah rootU == rootV?}
-        CheckCycle -- Ya --> SkipEdge[Abaikan: Terbentuk Siklus Redundan]
-        CheckCycle -- Tidak --> AddMST[Masukkan Jalan ke Daftar MST<br>Lakukan union(rootU, rootV)]
+        PopEdge --> FindRoots["Cari Root dari Kedua Ujung Node:<br>rootU = find(u), rootV = find(v)"]
+        FindRoots --> CheckCycle{"Apakah rootU == rootV?"}
+        CheckCycle -- Ya --> SkipEdge["Abaikan: Terbentuk Siklus Redundan"]
+        CheckCycle -- Tidak --> AddMST["Masukkan Jalan ke Daftar MST<br>Lakukan union(rootU, rootV)"]
         
         SkipEdge --> LoopEdges
         AddMST --> LoopEdges
     end
 
-    PrintResult --> End([Selesai])
+    PrintResult --> End(["Selesai"])
 
     class Start,End endNode;
     class FilterActive,SortEdges,InitDS,PopEdge,FindRoots,AddMST process;
